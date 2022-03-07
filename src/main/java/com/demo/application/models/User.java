@@ -14,7 +14,7 @@ import lombok.NonNull;
 public class User {
 	private String firstName;
 	private String lastName;
-	private Long id;
+	private Long rivetId;
 	private String password;
 	private Long phoneNumber;
 	private String cityName;
