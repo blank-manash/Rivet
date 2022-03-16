@@ -84,11 +84,17 @@ public class QueryProviders {
 	}
 
 	public String findFriends(Long id) {
-		return String.format(
-				"with bu as (select id_b from blocked_users b where id_a = %d), rivet_filters as (select distinct t2.id_b from friends t1 inner join friends t2 on t1.id_b = t2.id_a order by t2.id_b), cu"
-						+ "rrent_friends AS (select id_b from friends where id_a = %d)  select * from users where (users.rivet_id not in (select * from bu)) AND (users.rivet_id in (select * from rivet_filters))"
-						+ "AND (users.rivet_id not in (select * from current_friends)) AND (users.rivet_id != %d);",
-				id, id, id);
+
+		String withBlock = String.format(
+				"with bu as (select id_b from blocked_users b where id_a = %d), rivet_filters as (select distinct t2.id_b from friends t1 inner join friends t2 on t1.id_b = t2.id_a order by t2.id_b), current_friends AS (select id_b from friends where id_a = %d) ",
+				id, id);
+
+		String condition1 = "users.rivet_id not in (select * from bu)";
+		String condition2 = "users.rivet_id in (select * from rivet_filters)";
+		String condition3 = "users.rivet_id not in (select * from current_friends)";
+		String condition4 = String.format("users.rivet_id != %d", id);
+
+		return withBlock + userSql(SQL -> SQL.WHERE(condition1).AND().WHERE(condition2).AND().WHERE(condition3).AND().WHERE(condition4));
 
 	}
 
@@ -96,7 +102,8 @@ public class QueryProviders {
 		@SuppressWarnings("unchecked")
 		List<String> tIds = (List<String>) tagIds.get("tagIds");
 
-		String sql = "select * from users where (users.rivet_id in (select ut.rivet_id from user_tags ut inner join tags t on t.tag_id = ut.tag_id where %s))";
+		String sql = userSql(SQL -> SQL.WHERE(
+				"users.rivet_id in (select ut.rivet_id from user_tags ut inner join tags t on t.tag_id = ut.tag_id where %s)"));
 
 		String arg = tIds.stream().map(tag -> String.format("t.tag = '%s'", tag))
 				.collect(Collectors.joining(" OR ", "(", ")"));
