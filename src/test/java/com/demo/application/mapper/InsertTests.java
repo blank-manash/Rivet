@@ -3,7 +3,6 @@ package com.demo.application.mapper;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatNoException;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.List;
 
@@ -62,5 +61,5 @@ class InsertTests {
 			mapper.addFriend(1L, 29L);
 		});
 	}
-
+	
 }
