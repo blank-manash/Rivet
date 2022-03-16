@@ -20,7 +20,7 @@ jobs:
       uses: actions/setup-java@v2
       with:
         java-version: '11'
-        distribution: 'oracle'
+        distribution: 'adopt'
         cache: maven
     - name: maven test
       run: mvn test
