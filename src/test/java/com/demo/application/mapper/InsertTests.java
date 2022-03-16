@@ -33,7 +33,7 @@ class InsertTests {
 		mapper.save(user);
 		String id = String.valueOf(user.getRivetId());
 		List<User> exists = mapper.getUsers(Maps.newHashMap("rivet_id", id));
-		
+
 		assertThat(exists).singleElement().isEqualTo(user);
 	}
 
@@ -43,23 +43,49 @@ class InsertTests {
 			mapper.blockUser(1L, 10L);
 		});
 	}
+
 	@Test
-	void blockUser() {
-		assertThatNoException().isThrownBy(() -> {
-			mapper.blockUser(1L, 29L);
-		});
+	void blockUserAndUnblock() {
+		Long idA = 1L;
+		Long idB = 29L;
+
+		int blocked = mapper.blockUser(idA, idB);
+		int unblocked = mapper.unblockUser(idA, idB);
+
+		assertThat(blocked).as("One Record Should be inserted").isEqualTo(1);
+		assertThat(unblocked).as("One Record should be removed").isEqualTo(1);
 	}
+
 	@Test
 	void addFriendDuplicate() {
 		assertThatExceptionOfType(DuplicateKeyException.class).isThrownBy(() -> {
 			mapper.addFriend(1L, 10L);
 		});
 	}
+
 	@Test
-	void addFriend() {
-		assertThatNoException().isThrownBy(() -> {
-			mapper.addFriend(1L, 29L);
-		});
+	void addAndRemoveFriend() {
+		Long idA = 1L;
+		Long idB = 29L;
+		int added = mapper.addFriend(idA, idB);
+		int removed = mapper.removeFriend(idA, idB);
+
+		assertThat(added).as("One Recored Should be Inserted").isEqualTo(1);
+		assertThat(removed).as("One Record should be Deleted").isEqualTo(1);
+
 	}
-	
+
+	@Test
+	void addAndRemoveTags() {
+		Long id = 1L;
+		String tag = "Sports";
+		
+		int added = mapper.addTags(id, tag);
+		int removed = mapper.removeTags(id, tag);
+		
+		assertThat(added).as("One Recored Should be Inserted").isEqualTo(1);
+		assertThat(removed).as("One Record should be Deleted").isEqualTo(1);
+
+	}
+
 }

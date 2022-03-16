@@ -54,19 +54,33 @@ public class QueryProviders {
 		return "(" + ret + ")";
 	}
 
-	private SQL userRelation(Long idA, Long idB, String tableName) {
+	private String userRelation(Long idA, Long idB, String tableName) {
 		SQL sql = new SQL();
 		sql.INSERT_INTO(tableName).VALUES("id_a", Long.toString(idA)).VALUES("id_b", Long.toString(idB));
 
-		return sql;
+		return sql.toString();
+	}
+
+	private String userRelationRemove(Long idA, Long idB, String tableName) {
+		SQL sql = new SQL();
+		return sql.DELETE_FROM(tableName).WHERE("id_a = " + Long.toString(idA)).AND().WHERE("id_b = " + Long.toString(idB))
+				.toString();
+	}
+
+	public String removeFriend(Long idA, Long idB) {
+		return userRelationRemove(idA, idB, "friends");
+	}
+
+	public String unblockUser(Long idA, Long idB) {
+		return userRelationRemove(idA, idB, "blocked_users");
 	}
 
 	public String blockUser(Long idA, Long idB) {
-		return userRelation(idA, idB, "blocked_users").toString();
+		return userRelation(idA, idB, "blocked_users");
 	}
 
 	public String addFriend(Long idA, Long idB) {
-		return userRelation(idA, idB, "friends").toString();
+		return userRelation(idA, idB, "friends");
 	}
 
 	public String findFriends(Long id) {
@@ -84,9 +98,24 @@ public class QueryProviders {
 
 		String sql = "select * from users where (users.rivet_id in (select ut.rivet_id from user_tags ut inner join tags t on t.tag_id = ut.tag_id where %s))";
 
-		String arg = tIds.stream().map(tag -> String.format("t.tag = \"\\\"%s\\\"\"", tag))
+		String arg = tIds.stream().map(tag -> String.format("t.tag = '%s'", tag))
 				.collect(Collectors.joining(" OR ", "(", ")"));
 
 		return String.format(sql, arg);
+	}
+
+	public String addTags(Map<String, Object> param) {
+		Long id = (Long) param.get("rivetId");
+		String tag = (String) param.get("tag");
+		String fmt = "insert into user_tags value(%d, (select tag_id from tags where tag = '%s'))";
+		return String.format(fmt, id, tag);
+	}
+
+	public String removeTags(Map<String, Object> param) {
+		Long id = (Long) param.get("rivetId");
+		String tag = (String) param.get("tag");
+		String fmt = "delete from user_tags where (rivet_id = %d) AND (tag_id in (SELECT tag_id from tags where tags.tag = '%s'))";
+
+		return String.format(fmt, id, tag);
 	}
 }
