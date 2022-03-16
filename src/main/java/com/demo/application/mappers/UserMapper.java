@@ -28,4 +28,7 @@ public interface UserMapper {
 
 	@InsertProvider(type = QueryProviders.class, method = "blockUser")
 	void blockUser(@Param("idA") Long idA, @Param("idB") Long idB);
+	
+	@SelectProvider(type = QueryProviders.class, method = "findFriends")
+	List<User> getFriends(@Param("id") Long id);
 }

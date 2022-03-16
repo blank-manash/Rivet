@@ -60,4 +60,9 @@ class FindUserMapperTest {
 		.hasSize(2)
 		.allMatch(user -> user.getCityName().equals("North Kenny"), "Matching CityName");
 	}
+	@Test
+	void findFriends() {
+		List<User> friends = mapper.getFriends(1L);
+		assertThat(friends).isNotEmpty();
+	}
 }

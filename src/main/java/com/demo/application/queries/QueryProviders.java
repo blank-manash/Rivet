@@ -7,6 +7,9 @@ import org.apache.ibatis.jdbc.SQL;
 
 import com.demo.application.models.User;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class QueryProviders {
 	public String findAllUserSql() {
 		SQL sql = new SQL();
@@ -15,6 +18,7 @@ public class QueryProviders {
 
 	private String userSql(UnaryOperator<SQL> transform) {
 		SQL sql = new SQL();
+	
 		sql.SELECT(
 				"users.first_name, users.last_name, users.rivet_id, users.password, users.phone_number, location.city_name")
 				.FROM("users").INNER_JOIN("location ON users.location_id=location.location_id");
@@ -69,5 +73,12 @@ public class QueryProviders {
 	}
 	public String addFriend(Long idA, Long idB) {
 		return 	userRelation(idA, idB, "friends").toString();
+	}
+	public String findFriends(Long id) {
+		return String.format(
+				"with bu as (select id_b from blocked_users b where id_a = %d), rivet_filters as (select distinct t2.id_b from friends t1 inner join friends t2 on t1.id_b = t2.id_a order by t2.id_b), cu"
+				+ "rrent_friends AS (select id_b from friends where id_a = %d)  select * from users where (users.rivet_id not in (select * from bu)) AND (users.rivet_id in (select * from rivet_filters))"
+				+ "AND (users.rivet_id not in (select * from current_friends)) AND (users.rivet_id != %d);", id, id, id);
+		
 	}
 }
