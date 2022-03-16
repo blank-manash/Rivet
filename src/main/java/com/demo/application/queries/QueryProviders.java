@@ -63,8 +63,8 @@ public class QueryProviders {
 
 	private String userRelationRemove(Long idA, Long idB, String tableName) {
 		SQL sql = new SQL();
-		return sql.DELETE_FROM(tableName).WHERE("id_a = " + Long.toString(idA)).AND().WHERE("id_b = " + Long.toString(idB))
-				.toString();
+		return sql.DELETE_FROM(tableName).WHERE("id_a = " + Long.toString(idA)).AND()
+				.WHERE("id_b = " + Long.toString(idB)).toString();
 	}
 
 	public String removeFriend(Long idA, Long idB) {
@@ -117,5 +117,14 @@ public class QueryProviders {
 		String fmt = "delete from user_tags where (rivet_id = %d) AND (tag_id in (SELECT tag_id from tags where tags.tag = '%s'))";
 
 		return String.format(fmt, id, tag);
+	}
+
+	public String updateUser(User user) {
+		SQL sql = new SQL();
+		sql.UPDATE("users").SET("first_name = #{user.firstName}").SET("last_name = #{user.lastName}")
+				.SET("password = #{user.password}").SET("phone_number = #{user.phoneNumber}")
+				.SET("location_id = " + getLocationId(user.getCityName())).WHERE("rivet_id = #{user.rivetId}");
+
+		return sql.toString();
 	}
 }

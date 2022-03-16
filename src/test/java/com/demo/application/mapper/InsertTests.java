@@ -87,5 +87,23 @@ class InsertTests {
 		assertThat(removed).as("One Record should be Deleted").isEqualTo(1);
 
 	}
+	
+	@Test
+	void updateUser() {
+		User user = User.builder()
+						.firstName("Manash")
+						.lastName("Baul")
+						.phoneNumber(9435L)
+						.cityName("Port Jannie")
+						.rivetId(1L)
+						.password("foobar@g25k.cse.cc.i3")
+						.build();
+					
+		int rows = mapper.updateUser(user);
+		assertThat(rows).isEqualTo(1);
+		
+		List<User> users = mapper.getUsers(Maps.newHashMap("rivet_id", "1"));
+		assertThat(users).singleElement().isEqualTo(user);
+	}
 
 }

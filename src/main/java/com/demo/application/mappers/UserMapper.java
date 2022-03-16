@@ -9,6 +9,8 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.SelectProvider;
+import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.UpdateProvider;
 
 import com.demo.application.models.User;
 import com.demo.application.queries.QueryProviders;
@@ -22,6 +24,9 @@ public interface UserMapper {
 	@InsertProvider(type = QueryProviders.class, method = "insertUser")
 	@Options(useGeneratedKeys = true, keyProperty = "rivetId", keyColumn = "rivet_id")
 	Long save(@Param("user") User user);
+	
+	@UpdateProvider(type = QueryProviders.class, method = "updateUser")
+	int updateUser(@Param("user") User user);
 
 	@InsertProvider(type = QueryProviders.class, method = "addFriend")
 	int addFriend(@Param("idA") Long idA, @Param("idB") Long idB);
