@@ -25,6 +25,7 @@ class FindUserMapperTest {
 
 	@Autowired
 	private UserMapper mapper;
+	private static final String DEMO_PASSWORD = "2cc2e8e92575630b5136b980cf3dbefea769b176";
 	
 	@Test
 	void findUserByRivetId() {
@@ -34,7 +35,7 @@ class FindUserMapperTest {
 				.rivetId(5L)
 				.phoneNumber(4362L)
 				.cityName("Brooklynmouth")
-				.password("2cc2e8e92575630b5136b980cf3dbefea769b176")
+				.password(DEMO_PASSWORD)
 				.build();
 		
 		Map<String, String> filters = Maps.newHashMap(); 
@@ -56,7 +57,7 @@ class FindUserMapperTest {
 		
 		assertThat(response).as("There should be more responses per Rivet Id")
 		.hasOnlyElementsOfType(User.class)
+		.hasSize(2)
 		.allMatch(user -> user.getCityName().equals("North Kenny"), "Matching CityName");
 	}
-
 }
