@@ -9,8 +9,6 @@ import org.apache.ibatis.jdbc.SQL;
 
 import com.demo.application.models.User;
 
-import lombok.extern.slf4j.Slf4j;
-
 public class QueryProviders {
 	public String findAllUserSql() {
 		SQL sql = new SQL();
@@ -85,16 +83,12 @@ public class QueryProviders {
 
 	public String findFriends(Long id) {
 
-		String withBlock = String.format(
-				"with bu as (select id_b from blocked_users b where id_a = %d), rivet_filters as (select distinct t2.id_b from friends t1 inner join friends t2 on t1.id_b = t2.id_a order by t2.id_b), current_friends AS (select id_b from friends where id_a = %d) ",
-				id, id);
-
-		String condition1 = "users.rivet_id not in (select * from bu)";
-		String condition2 = "users.rivet_id in (select * from rivet_filters)";
-		String condition3 = "users.rivet_id not in (select * from current_friends)";
+		String condition1 = String.format("users.rivet_id not in (select id_b from blocked_users b where id_a = %d)", id);
+		String condition2 = "users.rivet_id in (select distinct t2.id_b from friends t1 inner join friends t2 on t1.id_b = t2.id_a order by t2.id_b)";
+		String condition3 = String.format("users.rivet_id not in (select id_b from friends where id_a = %d)", id);
 		String condition4 = String.format("users.rivet_id != %d", id);
 
-		return withBlock + userSql(SQL -> SQL.WHERE(condition1).AND().WHERE(condition2).AND().WHERE(condition3).AND().WHERE(condition4));
+		return userSql(SQL -> SQL.WHERE(condition1).AND().WHERE(condition2).AND().WHERE(condition3).AND().WHERE(condition4));
 
 	}
 
