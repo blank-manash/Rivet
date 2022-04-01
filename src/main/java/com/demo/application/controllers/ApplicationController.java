@@ -21,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @AllArgsConstructor
 @Slf4j
+@CrossOrigin
 public class ApplicationController {
 
 	private UserService userService;
