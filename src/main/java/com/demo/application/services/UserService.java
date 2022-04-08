@@ -77,4 +77,10 @@ public class UserService {
 	public List<User> listFriends(Long id) {
 		return mapper.listFriends(id);
 	}
+	public List<String> showTags(Long id) {
+		return mapper.showTags(id); 
+	}
+	public List<User> listBlockedUsers(Long id) {
+		return mapper.listBlockedUsers(id);
+	}
 }

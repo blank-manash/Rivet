@@ -83,15 +83,17 @@ public class QueryProviders {
 
 	public String findFriends(Long id) {
 
-		String condition1 = String.format("users.rivet_id not in (select id_b from blocked_users b where id_a = %d)", id);
+		String condition1 = String.format("users.rivet_id not in (select id_b from blocked_users b where id_a = %d)",
+				id);
 		String condition2 = "users.rivet_id in (select distinct t2.id_b from friends t1 inner join friends t2 on t1.id_b = t2.id_a order by t2.id_b)";
 		String condition3 = String.format("users.rivet_id not in (select id_b from friends where id_a = %d)", id);
 		String condition4 = String.format("users.rivet_id != %d", id);
 
-		return userSql(SQL -> SQL.WHERE(condition1).AND().WHERE(condition2).AND().WHERE(condition3).AND().WHERE(condition4));
+		return userSql(
+				SQL -> SQL.WHERE(condition1).AND().WHERE(condition2).AND().WHERE(condition3).AND().WHERE(condition4));
 
 	}
-	
+
 	public String listFriends(Long id) {
 		String condition = String.format("users.rivet_id in (select id_b from friends where id_a = %d)", id);
 		return userSql(SQL -> SQL.WHERE(condition));
@@ -117,6 +119,17 @@ public class QueryProviders {
 		return String.format(fmt, id, tag);
 	}
 
+	public String showTags(Long id) {
+		return String.format(
+				"select tags.tag from tags inner join user_tags on user_tags.tag_id = tags.tag_id where user_tags.rivet_id = %d",
+				id);
+	}
+	
+	public String listBlockedUsers(Long id) {
+		String condition = String.format("users.rivet_id in (select id_b from blocked_users where id_a = %d)", id);
+		return userSql(SQL -> SQL.WHERE(condition));
+	}
+
 	public String removeTags(Map<String, Object> param) {
 		Long id = (Long) param.get("rivetId");
 		String tag = (String) param.get("tag");
@@ -133,5 +146,5 @@ public class QueryProviders {
 
 		return sql.toString();
 	}
-	
+
 }

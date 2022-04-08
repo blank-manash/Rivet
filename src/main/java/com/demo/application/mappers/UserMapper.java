@@ -23,6 +23,12 @@ public interface UserMapper {
 
 	@SelectProvider(type = QueryProviders.class, method = "listFriends")
     List<User> listFriends(@Param("id") Long id);
+	
+	@SelectProvider(type = QueryProviders.class, method = "showTags")
+    List<String> showTags(@Param("id") Long id);
+
+	@SelectProvider(type = QueryProviders.class, method = "listBlockedUsers")
+    List<User> listBlockedUsers(@Param("id") Long id);
 
 	@InsertProvider(type = QueryProviders.class, method = "insertUser")
 	@Options(useGeneratedKeys = true, keyProperty = "rivetId", keyColumn = "rivet_id")

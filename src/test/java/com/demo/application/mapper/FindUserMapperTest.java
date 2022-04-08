@@ -93,4 +93,15 @@ class FindUserMapperTest {
 		.map(User::getRivetId).
 		containsAnyElementsOf(Arrays.asList(2L, 10L, 13L, 15L, 18L));
 	}
+	
+	@Test
+	void showTags() {
+		List<String> tags = mapper.showTags(1L);
+		assertThat(tags).containsExactly("Movies", "Academics");
+	}
+	@Test
+	void listBlockedUsers() {
+		List<User> blockedUsers = mapper.listBlockedUsers(1L);
+		assertThat(blockedUsers).map(User :: getRivetId).contains(10L, 16L, 24L, 26L);
+	}
 }

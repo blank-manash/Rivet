@@ -96,5 +96,14 @@ public class ApplicationController {
 	public boolean removeTags(@RequestParam("id") Long idA, @RequestParam("tag") String tag) {
 		return userService.removeTags(idA, tag);
 	}
+	
+	@GetMapping("/list-blocked-users")
+	public List<User> listBlockedUsers(@RequestParam("currentUser") Long id) {
+		return userService.listBlockedUsers(id);
+	}
+	@GetMapping("/show-tags")
+	public List<String> showTags(@RequestParam("currentUser") Long id) {
+		return userService.showTags(id);
+	}
 
 };
