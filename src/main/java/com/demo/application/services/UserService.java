@@ -73,4 +73,8 @@ public class UserService {
 	public List<User> searchByTag(List<String> tags) {
 		return mapper.searchByTag(tags);
 	}
+
+	public List<User> listFriends(Long id) {
+		return mapper.listFriends(id);
+	}
 }

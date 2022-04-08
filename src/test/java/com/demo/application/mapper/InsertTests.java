@@ -33,7 +33,7 @@ class InsertTests {
 		mapper.save(user);
 		String id = String.valueOf(user.getRivetId());
 		List<User> exists = mapper.getUsers(Maps.newHashMap("rivet_id", id));
-
+		assertThat(id).isNotBlank();
 		assertThat(exists).singleElement().isEqualTo(user);
 	}
 

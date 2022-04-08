@@ -44,6 +44,12 @@ public class ApplicationController {
 		return userService.getFriends(id);
 	}
 
+    @GetMapping("/list-friends")
+    public List<User> listFriends(@RequestParam("currentUser") Long id) {
+        log.info("Controller getFriends Request in Controller, Delegation to Service");
+        return userService.listFriends(id); 
+    }
+
 	@GetMapping("/search-by-tags")
 	public List<User> searchByTags(@RequestParam List<String> tags) {
 		return userService.searchByTag(tags);

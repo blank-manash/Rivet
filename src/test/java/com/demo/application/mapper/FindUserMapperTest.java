@@ -3,6 +3,7 @@ package com.demo.application.mapper;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -51,7 +52,7 @@ class FindUserMapperTest {
 		List<User> response = mapper.getUsers(filters);
 
 		assertThat(response).as("There should be more responses per Rivet Id").hasOnlyElementsOfType(User.class)
-				.hasSize(2).allMatch(user -> user.getCityName().equals("North Kenny"), "Matching CityName");
+				.allMatch(user -> user.getCityName().equals("North Kenny"), "Matching CityName");
 	}
 
 	@Test
@@ -83,5 +84,13 @@ class FindUserMapperTest {
 			assertNotNull(user.getCityName());
 			assertNotNull(user.getPhoneNumber());
 		});
+	}
+
+	@Test
+	void listFriends() {
+		List<User> users = mapper.listFriends(1L);
+		assertThat(users).hasSize(5)
+		.map(User::getRivetId).
+		containsAnyElementsOf(Arrays.asList(2L, 10L, 13L, 15L, 18L));
 	}
 }

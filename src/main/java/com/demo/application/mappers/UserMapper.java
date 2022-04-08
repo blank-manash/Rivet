@@ -21,6 +21,9 @@ public interface UserMapper {
 	@SelectProvider(type = QueryProviders.class, method = "findUserByFilter")
 	List<User> getUsers(@Param("filters") Map<String, String> filters);
 
+	@SelectProvider(type = QueryProviders.class, method = "listFriends")
+    List<User> listFriends(@Param("id") Long id);
+
 	@InsertProvider(type = QueryProviders.class, method = "insertUser")
 	@Options(useGeneratedKeys = true, keyProperty = "rivetId", keyColumn = "rivet_id")
 	Long save(@Param("user") User user);

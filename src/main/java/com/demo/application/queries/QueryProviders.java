@@ -91,6 +91,11 @@ public class QueryProviders {
 		return userSql(SQL -> SQL.WHERE(condition1).AND().WHERE(condition2).AND().WHERE(condition3).AND().WHERE(condition4));
 
 	}
+	
+	public String listFriends(Long id) {
+		String condition = String.format("users.rivet_id in (select id_b from friends where id_a = %d)", id);
+		return userSql(SQL -> SQL.WHERE(condition));
+	}
 
 	public String searchByTag(Map<String, Object> tagIds) {
 		@SuppressWarnings("unchecked")
@@ -128,4 +133,5 @@ public class QueryProviders {
 
 		return sql.toString();
 	}
+	
 }
