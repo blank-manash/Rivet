@@ -8,8 +8,8 @@ import org.apache.ibatis.annotations.InsertProvider;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.SelectProvider;
-import org.apache.ibatis.annotations.Update;
 import org.apache.ibatis.annotations.UpdateProvider;
 
 import com.demo.application.models.User;
@@ -53,12 +53,15 @@ public interface UserMapper {
 	List<User> getFriends(@Param("id") Long id);
 
 	@SelectProvider(type = QueryProviders.class, method = "searchByTag")
-	List<User> searchByTag(@Param("tagIds") List<String> tagIds);
+	List<User> searchByTag(@Param("tagIds") List<String> tagIds, @Param("currentUser") Long currentUser);
 
 	@DeleteProvider(type = QueryProviders.class, method = "removeFriend")
 	int removeFriend(Long idA, Long idB);
 
 	@DeleteProvider(type = QueryProviders.class, method = "unblockUser")
 	int unblockUser(@Param("idA") Long idA, @Param("idB") Long idB);
+	
+	@Select("SELECT id_b FROM blocked_users where id_a = #{id}")
+	List<Long> blockedUsersOf(Long id);
 
 }

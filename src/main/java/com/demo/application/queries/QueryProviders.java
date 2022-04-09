@@ -102,9 +102,12 @@ public class QueryProviders {
 	public String searchByTag(Map<String, Object> tagIds) {
 		@SuppressWarnings("unchecked")
 		List<String> tIds = (List<String>) tagIds.get("tagIds");
+		Long currentUser = (Long) tagIds.get("currentUser");
+		
+		String haveTags = "users.rivet_id in (select ut.rivet_id from user_tags ut inner join tags t on t.tag_id = ut.tag_id where %s)";
+		String notBlocked = String.format("users.rivet_id not in (select id_b from blocked_users where id_a = %d)", currentUser);
 
-		String sql = userSql(SQL -> SQL.WHERE(
-				"users.rivet_id in (select ut.rivet_id from user_tags ut inner join tags t on t.tag_id = ut.tag_id where %s)"));
+		String sql = userSql(SQL -> SQL.WHERE(haveTags).AND().WHERE(notBlocked));
 
 		String arg = tIds.stream().map(tag -> String.format("t.tag = '%s'", tag))
 				.collect(Collectors.joining(" OR ", "(", ")"));

@@ -1,6 +1,7 @@
 package com.demo.application.mapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.Arrays;
@@ -73,9 +74,9 @@ class FindUserMapperTest {
 		List<String> tagIds = Lists.newArrayList();
 		tagIds.add("Music");
 		tagIds.add("Sports");
-
-		List<User> users = mapper.searchByTag(tagIds);
-
+		Long id = 1L;
+		List<User> users = mapper.searchByTag(tagIds, 1L);
+		List<Long> blockList = mapper.blockedUsersOf(id);
 		assertThat(users).isNotEmpty().allSatisfy(user -> {
 			assertNotNull(user.getFirstName());
 			assertNotNull(user.getLastName());
@@ -83,6 +84,7 @@ class FindUserMapperTest {
 			assertNotNull(user.getRivetId());
 			assertNotNull(user.getCityName());
 			assertNotNull(user.getPhoneNumber());
+			assertThat(user.getRivetId()).isNotIn(blockList);
 		});
 	}
 

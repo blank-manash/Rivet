@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
+import com.demo.application.exceptions.ServerException;
 import com.demo.application.mappers.UserMapper;
 import com.demo.application.models.User;
 
@@ -22,9 +23,12 @@ public class UserService {
 		return mapper.getUsers(params);
 	}
 
-	public List<User> getFriends(Long id) {
+	public List<User> getFriends(Long id) throws ServerException {
+		if (id == null)
+			throw ServerException.with("Current User Id Not Provided");
+		
 		log.info("Service Call to Get Friends of User {}", id);
-		return mapper.getFriends(id);
+		return (mapper.getFriends(id));
 	}
 
 	public User registerUser(User user) {
@@ -33,7 +37,10 @@ public class UserService {
 		return user;
 	}
 
-	public boolean addFriend(Long idA, Long idB) {
+	public boolean addFriend(Long idA, Long idB) throws ServerException {
+		List<Long> blockList = mapper.blockedUsersOf(idA);
+		if (blockList.contains(idB))
+			throw ServerException.with("Blocked User Cannot Be Added as a Friend.");
 		log.info("Service Call to add Friend {} -> {}", idA, idB);
 		int rows = mapper.addFriend(idA, idB);
 		return rows == 1;
@@ -70,8 +77,8 @@ public class UserService {
 		return mapper.updateUser(user) == 1;
 	}
 
-	public List<User> searchByTag(List<String> tags) {
-		return mapper.searchByTag(tags);
+	public List<User> searchByTag(List<String> tags, Long id) {
+		return mapper.searchByTag(tags, id);
 	}
 
 	public List<User> listFriends(Long id) {

@@ -9,4 +9,7 @@ public class ServerException extends Exception {
 	public ServerException(String message){
 		super(message);
 	}
+	public static ServerException with(String string) {
+		return new ServerException(string);
+	}
 }

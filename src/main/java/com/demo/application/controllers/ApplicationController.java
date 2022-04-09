@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.demo.application.exceptions.ServerException;
 import com.demo.application.models.User;
 import com.demo.application.services.UserService;
 
@@ -39,7 +40,7 @@ public class ApplicationController {
 	}
 
 	@GetMapping("/find-friends")
-	public List<User> getFriends(@RequestParam("currentUser") Long id) {
+	public List<User> getFriends(@RequestParam("currentUser") Long id) throws ServerException {
 		log.info("Controller getFriends Request in Controller, Delegation to Service");
 		return userService.getFriends(id);
 	}
@@ -51,8 +52,8 @@ public class ApplicationController {
     }
 
 	@GetMapping("/search-by-tags")
-	public List<User> searchByTags(@RequestParam List<String> tags) {
-		return userService.searchByTag(tags);
+	public List<User> searchByTags(@RequestParam List<String> tags, @RequestParam Long currentUser) {
+		return userService.searchByTag(tags, currentUser);
 	}
 
 	@PostMapping("/register-user")
@@ -78,7 +79,7 @@ public class ApplicationController {
 	}
 
 	@PostMapping("/add-friend")
-	public boolean addFriends(@RequestParam("id_a") Long idA, @RequestParam("id_b") Long idB) {
+	public boolean addFriend(@RequestParam("id_a") Long idA, @RequestParam("id_b") Long idB) throws ServerException {
 		return userService.addFriend(idA, idB);
 	}
 
