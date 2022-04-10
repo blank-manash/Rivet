@@ -52,7 +52,7 @@ public class ApplicationController {
     }
 
 	@GetMapping("/search-by-tags")
-	public List<User> searchByTags(@RequestParam List<String> tags, @RequestParam Long currentUser) {
+	public List<User> searchByTags(@RequestParam("tags") List<String> tags, @RequestParam("currentUser") Long currentUser) {
 		return userService.searchByTag(tags, currentUser);
 	}
 
